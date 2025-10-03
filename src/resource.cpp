@@ -4,69 +4,51 @@
 
 #include "resource.h"
 
-#include <iostream>
 
-class Resource {
-public:
-    const int id;
+Resource::Resource(size_t size) : id(++object_count), size(size), data(new char[size]) {
+    srand(time(nullptr));
+    for (int i = 0; i < size; ++i)
+        data[i] = rand() % 5;
 
-    Resource(size_t size) : id(++object_count), size(size), data(new char[size]) {
-        srand(time(nullptr));
-        for (int i = 0; i < size; ++i)
-            data[i] = rand() % 5;
+    std::cout << "Resource created, id= " << id << '\n';
+    std::cout << "Object count= " << object_count << '\n';
+}
 
-        std::cout << "Resource created, id= " << id << '\n';
-    }
+Resource::Resource(Resource &&moved) noexcept : id(++object_count), size(moved.size), data(moved.data) {
+    // Обнуляем исходный объект, чтобы его деструктор не освободил переданную память
+    moved.data = nullptr;
+    moved.size = 0;
 
-    // Запрет копирования
-    Resource(const Resource& other) = delete;
+    std::cout << "Resource created, id= " << id << " resource with id= " << moved.id << " was moved into it\n";
+}
 
-    // Запрет присваивания
-    Resource& operator=(const Resource& other) = delete;
-
-    // Перемещение
-    Resource(Resource&& moved) noexcept: id(++object_count), size(moved.size), data(moved.data) {
+Resource &Resource::operator=(Resource &&moved) noexcept {
+    if (this != &moved) {
+        delete[] data;
+        data = moved.data;
+        size = moved.size;
         // Обнуляем исходный объект, чтобы его деструктор не освободил переданную память
         moved.data = nullptr;
         moved.size = 0;
 
-        std::cout << "Resource created, id= " << id << " resource with id= " <<  moved.id << " was moved into it\n";
+        std::cout << "Resource with id= " << moved.id << " moved to resource with id= " << id << '\n';
     }
+    return *this;
+}
 
-    // Присваивание перемещением
-    Resource& operator=(Resource&& moved) noexcept {
-        if (this != &moved) {
-            delete[] data;
-            data = moved.data;
-            size = moved.size;
-            // Обнуляем исходный объект, чтобы его деструктор не освободил переданную память
-            moved.data = nullptr;
-            moved.size = 0;
+Resource::~Resource() {
+    delete[] data;
+    std::cout << "Deleted resource with id= " << id << '\n';
+}
 
-            std::cout << "Resource with id= " << moved.id << " moved to resource with id= " << id<< '\n';
-        }
-        return *this;
-    }
-
-    ~Resource() {
-        delete[] data;
-        std::cout << "Deleted resource with id= " << id << '\n';
-    }
-
-    void print() const{
-        std::cout << "Info about resource with id= " << id << ": ";
-        std::cout << "Size= " << size << " ";
-        std::cout << "Data= ";
-        for (int i = 0; i < size; ++i)
-            std::cout << static_cast<int>(data[i]) << ' ';
-        std::cout << '\n';
-    }
-private:
-    static inline int object_count = 0;
-    size_t size;
-    char *data;
-};
-
+void Resource::print() const {
+    std::cout << "Info about resource with id= " << id << ": ";
+    std::cout << "Size= " << size << " ";
+    std::cout << "Data= ";
+    for (int i = 0; i < size; ++i)
+        std::cout << static_cast<int>(data[i]) << ' ';
+    std::cout << '\n';
+}
 
 void test() {
     Resource r(5);
