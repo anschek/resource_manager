@@ -22,6 +22,7 @@ add_executable(resource_manager
         src/unique_resource.cpp
         src/shared_resource.cpp
         src/weak_resource.cpp
+        src/resource_manager.cpp
 )
 
 # Папка заголовочных файлов
