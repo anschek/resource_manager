@@ -6,7 +6,7 @@
 #define RESOURCE_MANAGER_RESOURCE_H
 #include <iostream>
 
-void test();
+void test_resource();
 class Resource {
 public:
     // Конструктор
@@ -18,16 +18,16 @@ public:
     // Конструктор перемещения
     Resource(Resource&& moved) noexcept;
     // Оператор присваивания перемещением
-    Resource& operator=(Resource&& moved) noexcept;
+    Resource& operator=(Resource&& moved) = delete;
     // Деструктор
     ~Resource();
 
     const int id;
     void print() const;
 private:
-    static inline int object_count = 0;
-    size_t size;
-    char *data;
+    static inline int object_count_ = 0;
+    size_t size_;
+    char *data_;
 };
 
 #endif //RESOURCE_MANAGER_RESOURCE_H
