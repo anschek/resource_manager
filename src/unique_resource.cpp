@@ -6,30 +6,18 @@
 
 void test_unique_resource() {
     UniqueResource ur(3);
-    ur.print();
+    ur.print_if_alive();
 
     UniqueResource ur2(std::move(ur));
-    ur2.print();
-    ur.print();
+    ur2.print_if_alive();
+    ur.print_if_alive();
 
     UniqueResource ur3(5);
-    ur3.print();
+    ur3.print_if_alive();
     ur3 = std::move(ur2);
-    ur3.print();
-    ur2.print();
+    ur3.print_if_alive();
+    ur2.print_if_alive();
 }
 
 UniqueResource::UniqueResource(size_t size): ptr_(std::make_unique<Resource>(size)) {
-}
-
-UniqueResource::UniqueResource(UniqueResource&& moved) noexcept: ptr_(std::move(moved.ptr_)) {
-    std::cout << "Unique resource with id=" << id() << " was moved\n";
-}
-
-UniqueResource &UniqueResource::operator=(UniqueResource &&moved) noexcept {
-    if (this != &moved) {
-        std::cout << "Unique resource with id=" << moved.id() << " was moved to " << id() << '\n';
-        ptr_ = std::move(moved.ptr_);
-    }
-    return *this;
 }

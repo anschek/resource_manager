@@ -15,6 +15,7 @@ class SharedResource {
 public:
     SharedResource();
     SharedResource(size_t size);
+    SharedResource(std::shared_ptr<Resource> ptr);
 
     // Конструктор копирования
     SharedResource(const SharedResource &other) = default;
@@ -31,7 +32,6 @@ public:
     void print_if_alive() const { if (ptr_) ptr_->print(); }
 
 private:
-    SharedResource(std::shared_ptr<Resource> ptr);
     std::shared_ptr<Resource> ptr_;
 };
 

@@ -12,22 +12,22 @@
 void test_unique_resource();
 
 class UniqueResource {
-    public:
+public:
     UniqueResource(size_t size);
 
     // Конструктор копирования
-    UniqueResource(const UniqueResource& other) = delete;
+    UniqueResource(const UniqueResource &other) = delete;
     // Оператор присваивания копированием
-    UniqueResource& operator=(const UniqueResource& other) = delete;
+    UniqueResource &operator=(const UniqueResource &other) = delete;
     // Конструктор перемещения
-    UniqueResource(UniqueResource&& moved) noexcept;
+    UniqueResource(UniqueResource &&moved) = default;
     // Оператор присваивания перемещением
-    UniqueResource& operator=(UniqueResource&& moved) noexcept;
+    UniqueResource &operator=(UniqueResource &&moved) = default;
 
-    Resource* release() { return ptr_.release(); }
+    Resource *release() { return ptr_.release(); }
     int id() const { return ptr_->id; }
-    operator bool() const { return ptr_ != nullptr; }
-    void print() const { if (*this) ptr_->print(); }
+    operator bool() const { return static_cast<bool>(ptr_); }
+    void print_if_alive() const { if (ptr_) ptr_->print(); }
 
 private:
     std::unique_ptr<Resource> ptr_;
