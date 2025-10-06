@@ -8,6 +8,7 @@ add_executable(resource_manager
         src/main.cpp
         include/resource.h
         src/resource.cpp
+        src/unique_resource.cpp
 )
 
 # Папка заголовочных файлов
